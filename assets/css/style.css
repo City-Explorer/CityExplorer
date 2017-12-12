@@ -1,0 +1,85 @@
+html {
+    position: relative;
+    min-height: 100%;
+}
+body {
+	color: white;
+	font-size: 20px;
+	font-family: Arial;
+
+	background: url('../images/bg-main.jpeg');
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+	
+	margin-bottom: -100px; /*for footer*/
+}
+#wrapper-in {
+	background-color: rgba(150,150,150, 0.5);
+	padding-top: 50px;
+	margin-top: 20px;
+	min-height: 80vh;
+}
+h1 {
+	color:  white;
+	font-family: Arial;
+	font-size 30px;
+	text-align: center;
+}
+.btn-logo {
+	height: 100%;
+	margin-right: 5px;
+	cursor: pointer;
+}
+#search-city {
+	border-radius: 12px;
+}
+.btn-search {
+	height: 38px;
+	width: 45px;
+	border-radius: 12px;
+	border: 1px solid #dbdbdb;
+	border-left: 0px;
+	background-color: rgba(255,255,255,1);
+	/*margin-left: -80px;*/
+	padding: 0px;
+	/*background: url('../images/search.png');*/
+}
+
+.form-control {
+	border-radius: 12px;
+}
+.form-control:focus {
+	-webkit-box-shadow: none;
+	border-right: 0px;
+    outline: -webkit-focus-ring-color auto 0px;}
+
+#interest-buttons{
+	text-align: left;
+	display: inline-block;
+
+}
+
+.interest-title {
+	text-align: left;
+}
+
+.btn-interest {
+	width: 150px;
+	background-color: #b1ddff;
+	border-radius: 12px;
+	color : #5a5a5a;
+	padding: 5px;
+	text-align: center;
+	display: inline-block;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100px;
+    color: white;
+    text-align: center;
+    line-height: 90px;
+}
