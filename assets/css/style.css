@@ -41,9 +41,7 @@ h1 {
 	border: 1px solid #dbdbdb;
 	border-left: 0px;
 	background-color: rgba(255,255,255,1);
-	/*margin-left: -80px;*/
 	padding: 0px;
-	/*background: url('../images/search.png');*/
 }
 
 .form-control {
