@@ -1,11 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
 	<title>City Explorer</title>
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
-	<link href="https://fonts.googleapis.com/css?family=Noticia+Tex|Playfair+Display+SC" rel="stylesheet">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noticia+Tex|Playfair+Display+SC|Arsenal">
+
   	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
+
+	<script src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&language=en"></script>
 
 </head>
 <body>
@@ -26,9 +32,9 @@
 					<div class="row">
 						<div class="col-10 offset-1">
 							<div class="input-group">
-						      <input type="text" class="form-control" placeholder="Enter your destinate city" aria-label="City search">
+						      <input id="city-autocomplete" type="text" class="form-control" placeholder="Enter your destined city" aria-label="City search">
 						      <span class="input-group-btn">
-						        <button class="btn btn-search" type="button">
+						        <button class="btn btn-search" id="city-search" type="submit">
 						        	<img src="assets/images/search.png" class="btn-logo" alt="GO!">
 						        </button>
 						      </span>
@@ -39,17 +45,33 @@
 			</div>
 	  	</form>
 	
-		<div class="row">
+<!-- 		<div class="row">
 			<div class="col-11 offset-1">
 				<p class="interest-title">Select your categories of interest</p>
 				<div id="interest-buttons">
-					<div class="btn-interest">Weather</div>
-					<div class="btn-interest">Restaurants</div>
-					<div class="btn-interest">Walking Trails</div>
+					<div class="btn-interest" id="weather">Weather</div>
+					<div class="btn-interest" id="food">Restaurants</div>
+					<div class="btn-interest" id="trails">Walking Trails</div>
 				</div>
 			
 			</div>
 		</div>
+ -->	
+		<div class="tabs">
+			<ul class="tabs-nav">
+				<li id="weather" class="tabs-anchor">Weather</li>
+				<li id="food" class="tabs-anchor">Restaurants</li>
+				<li id="trails" class="tabs-anchor current">Walking Trails</li>
+			</ul>
+			<div class="tabs-content">
+				<div class="tab" id="weather-result"></div>
+				<div class="tab" id="food-result"></div>
+  				<div class="tab" id="trails-result"></div>
+			</div>
+		</div>
+
+<!-- <div id="trails_result"></div> -->
+
 	</main>
 </div><!-- wrapper end -->
 
@@ -59,8 +81,20 @@
 	</div>
 </footer>
 
+<script>
+    var input = document.getElementById('city-autocomplete');
+    var autocomplete = new google.maps.places.Autocomplete(input,{types: ['(cities)']});
+    google.maps.event.addListener(autocomplete, 'place_changed', function(){
+        var place = autocomplete.getPlace();
+    });
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</script>
+
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+
 <script src="assets/js/explorer.js"></script>
 
 </body>

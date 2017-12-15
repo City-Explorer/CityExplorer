@@ -8,22 +8,26 @@ body {
 	font-family: Arial;
 
 	background: url('../images/bg-main.jpeg');
-	background-size: 100% 100%;
-	background-repeat: no-repeat;
+	/*background-size: 100% 100%;*/
+	background-repeat:  repeat-x;
 	background-position: center;
 	
-	margin-bottom: -100px; /*for footer*/
+	/*margin-bottom: -100px; /*for footer*/
 }
 #wrapper-in {
 	background-color: rgba(150,150,150, 0.5);
 	padding-top: 50px;
+	padding-bottom: 5px;
 	margin-top: 20px;
-	min-height: 80vh;
+	/*min-height: 100%;*/
+	min-height: 90vh;
+	margin-bottom: 100px;
 }
 h1 {
 	color:  white;
-	font-family: Arial;
-	font-size 30px;
+	/*font-family: Arial;*/
+	font-family: 'Arsenal', sans-serif;
+	font-size: 40px;
 	text-align: center;
 }
 .btn-logo {
@@ -81,3 +85,92 @@ h1 {
     text-align: center;
     line-height: 90px;
 }
+
+
+/* ============== Trails ====================== */
+.trail {
+	display: inline-block;
+	width: 100%;
+	margin: 2px;
+	color: #389be9;
+}
+
+.trail .card-header{
+	/*background-color: rgba(255,255,255, 0.1);*/
+	font-family: 'Playfair Display', serif;
+	font-size: 25px;
+	line-height: 1;
+}
+.trail_descr {
+	font-size: 16px;
+	color : #5a5a5a
+	/*color: #aaa;*/
+}
+.trail_dir {
+	font-size: 15px;
+	color : #5a5a5a
+	/*color: #bbb;*/
+}
+
+/* ============ End Trails * ================== */
+
+/* ============== Tabs =========================*/
+
+.tabs {
+	position: relative;
+	padding: .2em;
+}
+.tabs .tabs-nav {
+	margin: 0;
+	padding: .2em .2em 0;
+}
+
+.tabs .tabs-nav li {
+	list-style: none;
+	float: left;
+	position: relative;
+	top: 0;
+	margin: 1px .2em 0 0;
+	padding: 0;
+	white-space: nowrap;
+
+}
+
+.tabs .tabs-nav .tabs-anchor {
+	float: left;
+	padding: .5em 1em;
+	text-decoration: none;
+
+	background-color: #b1ddff;
+	border-radius: 12px;
+	border-bottom-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+
+	color : #5a5a5a;
+	cursor: pointer;
+}
+.tabs .tabs-nav .tabs-anchor::after{
+	clear: both;
+}
+.tabs .tabs-nav li.current {
+	background: #93cffd;
+	cursor: default;
+}
+.tabs .tabs-content {
+	display: inline-block;
+	margin-left: 4px;
+	width: 100%;
+}
+.tabs .tabs-content .tab{
+	position: relative;
+	display: block;
+	padding: 1em 1.4em;
+	/*border: 8px solid rgba(147,207,253, 0.2);*/
+	border: 2px solid rgba(255,255,255, 0.2);
+	border-top: 10px solid #93cffd;
+	border-top-right-radius: 12px;
+	background-color: rgba(150,150,150, 0);
+	/*margin: 50px 0px 0px 4px;*/
+}
+
+/* ============== End Tabs =========================*/
