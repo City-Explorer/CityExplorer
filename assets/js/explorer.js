@@ -1,4 +1,3 @@
-
 function getTrails(){
 	
 	console.log("starting ajax");
@@ -34,6 +33,10 @@ function getTrails(){
     });
 }
 
+	// Weather global variable
+	var lon = 0;
+	var lat = 0;
+
 
 function renderTrails(data){
 
@@ -41,12 +44,16 @@ function renderTrails(data){
 
 	for(var i=0; i<data.length; i++){
 
+
 		var name = data[i].name;
 		var descr = data[i].description;
 		var directions = data[i].directions;
 		var id = data[i].unique_id;
 		var country = data[i].country;
 
+		// Give weather values
+		lon = data[i].lon;
+		lat = data[i].lat;
 
 		var trail_card = $("<div>").addClass("card trail")
 		trail_card.attr("uid", id).attr("city", data[i].city);
@@ -85,6 +92,10 @@ tabs_nav.find('.tabs-anchor').on("click", function(event){
 	if(city_data != "" && this.id == "trails"){
 		getTrails();
 	}
+	else if(this.id == "weather"){
+		getWeather();
+		
+	}
 
 	tabs_nav.find('.current');
 	tabs_nav.find('.current').removeClass('current');
@@ -104,3 +115,28 @@ $("#city-search").on("click", function(){
 	}
 });
 
+function getWeather() {
+	console.log("run weather");
+
+	var settings = {
+		"url": "https://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+lon+"&APPID=fd262fdfe1750a09395cde502e14e98a",
+		// "method": "get"
+	};
+	$.ajax(settings)
+	.done(function(weather) {
+		console.log(weather);
+		renderWeather(weather.list);
+	})
+}
+
+function renderWeather(data){
+	for(var i=0; i<data.length; i++){
+		var date_time = data[i].dt_txt;
+		var [date, time] = date_time.split(" ");
+		// var date = data[i].dt_txt;
+		var fTemp = Math.floor(9*(data[i].main.temp_max - 273)/5 +32);
+		var weather_line = $("<p>");
+		weather_line.html(date + "<br>"+time+"<br>"+"max temp:"+fTemp+"&deg;");
+		$("#weather-result").append(weather_line);
+	}
+}
