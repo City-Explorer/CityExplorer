@@ -1,106 +1,203 @@
 
-function getTrails(){
-	
-	console.log("starting ajax");
+// Initialize Firebase
+var config = {
+	apiKey: "AIzaSyBQNQixtPcDY1FVSTf98j_1QrYQcJwBrfk",
+	authDomain: "city-explorer-1513208628803.firebaseapp.com",
+	databaseURL: "https://city-explorer-1513208628803.firebaseio.com",
+	projectId: "city-explorer-1513208628803",
+	storageBucket: "city-explorer-1513208628803.appspot.com",
+	messagingSenderId: "701212733449"
+};
+firebase.initializeApp(config);
 
-	var key = "XUuOf3VXVkmshrHJYmJzcpGFl6Qgp1TZAeLjsnx7RxEWfCbevw";
-	var limit = 30;
+var db = firebase.database();
 
-	var city_auto = $("#city-autocomplete").val();
-	var city_prop = city_auto.split(',');
-	var city = city_prop[0];
+var google_key = "";
+var weather_key ="";
+var food_key="";
 
-	var settings = {
-	  "async": true,
-	  "crossDomain": true,
-	  // "url": "https://trailapi-trailapi.p.mashape.com/?limit="+limit+"&q%5Bcity_cont%5D="+city,
-	  "url": "https://trailapi-trailapi.p.mashape.com/?limit="+limit+"&q%5Bactivities_activity_type_name_eq%5D=hiking&q%5Bcity_cont%5D="+city,  "method": "GET",
-	  "headers": {
-	    "x-mashape-key": key,
-	    "accept": "text/plain",
-	    "cache-control": "no-cache",
-	  }
-	}
+//getting API keys for db
+db.ref('/api_keys').on("value", function(snap_google){
+	google_key = snap_google.val().google;
+	weather_key = snap_google.val().weather;
+	food_key = snap_google.val().food;
+});
 
-	$.ajax(settings)
-	.done(function (response_trails) {
-	 	console.log(response_trails.places);
-	 	renderTrails(response_trails.places);
+//geolocation global variables
+var city, latitude, longitude;
+var map;
+var service;
 
+//loading google API + autocomplete on success
+$.getScript("https://maps.googleapis.com/maps/api/js?key="+google_key+"&libraries=places&language=en")
+	.done(function( script, textStatus ) {
+		// === city autocomplete====
+		var input = document.getElementById('city-autocomplete');
+		var autocomplete = new google.maps.places.Autocomplete(input,{types: ['(cities)']});
+		google.maps.event.addListener(autocomplete, 'place_changed', function(){
+		    var place = autocomplete.getPlace();
+		});
 
+	    console.log( textStatus );
 	})
-	.fail(function(error){
-    	console.log(error.code);
-    });
+	.fail(function( jqxhr, settings, exception ) {
+		console.log("Triggered ajaxError handler.");
+
+});
+//============================================
+
+function renderMap(divMapId) {
+
+	var mapProp = {
+	    center: new google.maps.LatLng(latitude,longitude),
+	    zoom: 10,
+	    mapTypeId: google.maps.MapTypeId.ROADMAP
+	};
+	map = new google.maps.Map(document.getElementById(divMapId),mapProp);
 }
 
+var current_place = 0;
 
-function renderTrails(data){
+function addTrailMarker(place) {
 
-	$("#trails-result").empty();
+	var marker = new google.maps.Marker({
+        position : place.geometry.location,
+        map : map,
+        title : place.name,
+        id : place.place_id
+	});
+	// current_place = place.place_id;
+  	google.maps.event.addListener(marker, 'click', function() {
+  		//move right tab content on current location
+  		console.log("marker clicked "+marker.id);
+  		$("#trails-result .right").animate({
+        	scrollTop: $("#"+marker.id).offset().top
+        },
+        'slow');
+  	});
+}
 
-	for(var i=0; i<data.length; i++){
+function getGoogleTrails(){
 
-		var name = data[i].name;
-		var descr = data[i].description;
-		var directions = data[i].directions;
-		var id = data[i].unique_id;
-		var country = data[i].country;
+    city = document.getElementById('city-autocomplete').value;
 
-
-		var trail_card = $("<div>").addClass("card trail")
-		trail_card.attr("uid", id).attr("city", data[i].city);
+	//get latitude & longitude
+	var geocoder = new google.maps.Geocoder();
+	geocoder.geocode({ 'address': city }, function (results, status) {
 		
-		var trail_card_name = $("<div>").addClass("card-header").html( name );
-		trail_card.append(trail_card_name);
+		console.log(status, results);
+    	
+    	if (status == google.maps.GeocoderStatus.OK) {
+			latitude = results[0].geometry.location.lat();
+			longitude = results[0].geometry.location.lng();
 
-		var trail_features_list = $("<ul>").addClass("list-group list-group-flush");
+			var city_loc = new google.maps.LatLng(latitude, longitude);
 
-		if( descr ){
-			var tr_descr = $("<li>").addClass("list-group-item trail_descr").html( descr );
-			trail_features_list.append(tr_descr);
+			renderMap("googleMapTrails");
+
+			var request = {
+				location: city_loc,
+				radius: '50',
+				query: city+' walking trails',
+			};
+
+			service = new google.maps.places.PlacesService(map);
+			service.textSearch(request, renderGoogleTrails);
 		}
-		if( directions ){
-			var dir_decoded = directions.replace(/&lt;br \/&gt;/g, ' ');
-			var tr_dir = $("<li>").addClass("list-group-item trail_dir").html( dir_decoded );
-			trail_features_list.append(tr_dir);
-		}
-		
-		trail_card.append(trail_features_list);
-		$("#trails-result").append(trail_card);
+	});
 
+}
+
+function renderGoogleTrails(results, status) {
+
+	if (status == google.maps.places.PlacesServiceStatus.OK) {
+	
+		$("#trails-result .right").empty();
+
+	    for (var i = 0; i < results.length; i++) {
+	    	var place = results[i];
+	    	console.log(place);
+
+			addTrailMarker(place);
+
+			var name = place.name;
+			var address = place.formatted_address;
+			var id = place.place_id;
+			var rating = place.rating;
+			var imageRef="";
+			if(place.photos){
+				imageRef = place.photos[0].getUrl({maxWidth: 500});
+			}
+
+			var trail_card = $("<div>").addClass("card trail")
+			trail_card.attr("id", id);//.attr("city", city);
+			
+			var trail_card_name = $("<div>").addClass("card-header").html( name );
+			var map_icon = $("<img>").attr("src", "assets/images/google_marker2.png").addClass("trail_marker");
+			trail_card_name.prepend(map_icon);
+			trail_card.append(trail_card_name);
+
+			var trail_features_list = $("<ul>").addClass("list-group");
+
+			if(imageRef) {
+				var trail_image = $("<img>").attr("src", imageRef).attr("alt", "place photo");
+				trail_image.addClass("img-trail");
+				var trail_descr = $("<li>").addClass("list-group-item trail_img");
+				trail_descr.prepend(trail_image);
+				trail_features_list.append(trail_descr);
+			}
+			// add raiting and hours
+			if( rating ){
+				var stars_size = Math.max(0, (Math.min(5, rating))) * 16;
+				var rating_stars = $("<span>").html("<span style='width:"+stars_size+"px'></span>");
+				rating_stars.addClass("stars");
+				var trail_rating = $("<li>").addClass("list-group-item trail_rating").html("<span>"+rating+"</span>");
+				trail_rating.append( rating_stars );
+				trail_features_list.append(trail_rating);
+			}
+
+			if( address ){
+				var trail_address = $("<li>").addClass("list-group-item trail_descr").html( address );
+				trail_features_list.append(trail_address);
+			}
+
+			//place.opening_hours{}
+
+			trail_card.append(trail_features_list);
+			$("#trails-result .right").append(trail_card);
+
+		}
 	}
 }
+// ====== TABS & Search button =======
 
-var current_tab = null;
+var current_tab = "trails";
 var tabs_nav = $(".tabs-nav");
-
-$('.tab').hide();
-$(".tabs").hide();
 
 tabs_nav.find('.tabs-anchor').on("click", function(event){
 
 	var city_data = $("#city-autocomplete").val();
 
 	if(city_data != "" && this.id == "trails"){
-		getTrails();
+		getGoogleTrails();
 	}
 
-	tabs_nav.find('.current');
 	tabs_nav.find('.current').removeClass('current');
 	$(this).addClass('current');
 	var id = "#"+ this.id + "-result";
 	$("#"+this.id+"-result").show().siblings().hide();		
 
-
 });
 
-$("#city-search").on("click", function(){
+$("#city-search").on("click", function(event){
+
 	event.preventDefault();
+	
+	$("header").find('.frontpage').addClass('top').removeClass('frontpage');
+	
 	var city_data = $("#city-autocomplete").val();
 	if(city_data != ""){
 		$(".tabs").show();
 		$(".current").click();
 	}
 });
-
