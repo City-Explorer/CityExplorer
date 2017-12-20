@@ -169,6 +169,64 @@ function renderGoogleTrails(results, status) {
 		}
 	}
 }
+
+function getFood(){
+	
+	console.log("starting Yelp API");
+
+	var key = "XUuOf3VXVkmshrHJYmJzcpGFl6Qgp1TZAeLjsnx7RxEWfCbevw";
+	var limit = 30;
+
+	var city_auto = $("#city-autocomplete").val();
+	var city_prop = city_auto.split(',');
+	var city = city_prop[0];
+	const proxyurl = "https://cors-anywhere.herokuapp.com/";
+
+	var settings = {
+	  "async": true,
+	  "crossDomain": true,
+	  // "url": "https://trailapi-trailapi.p.mashape.com/?limit="+limit+"&q%5Bcity_cont%5D="+city,
+	  "url":proxyurl+"https://api.yelp.com/v3/businesses/search?location="+city,
+	  "method":"GET",
+	  "headers": {
+	  	"Authorization":"Bearer jtdOtf_Nw2aFD-KE_uZwAWGiQB2cNb9sApKVKV_3Bzbhlg0fjZ6lIqmNdziHcaBr47Hd9F3Myyt2eWEm_HmNmoRjMA2bc_znA3M1kYzLKcFxJJ-Mx9wLkmd68JswWnYx",
+	  }
+	}
+
+	$.ajax(settings)
+	.done(function (response_food) {
+	 	console.log(response_food);
+	 	renderFood(response_food);
+
+
+	})
+	.fail(function(error){
+    	console.log(error.code);
+    });
+}
+
+function renderFood(data){
+
+	$("#food-result").empty();
+
+	for(var i=0; i<data.businesses.length; i++){
+
+		var name = data.businesses[i].name;
+		var descr = "Rating: "+data.businesses[i].rating;
+		var directions = "Address: "+data.businesses[i].location.address1+","+data.businesses[i].location.city+","+data.businesses[i].location.zip_code;
+		var id = data.businesses[i].id;
+		var country = data.businesses[i].location.country;
+
+
+		var food_card = $("<div>").addClass("card trail")
+		food_card.attr("uid", id).attr("city", data.businesses[i].location.city);
+		var food_card_name = $("<div>").addClass("card-header").html( name );
+		food_card.append(food_card_name);
+		$("#food-result").append(food_card);
+	}
+}
+
+
 // ====== TABS & Search button =======
 
 var current_tab = "trails";
@@ -180,7 +238,9 @@ tabs_nav.find('.tabs-anchor').on("click", function(event){
 
 	if(city_data != "" && this.id == "trails"){
 		getGoogleTrails();
-	}
+	} else if(city_data != "" && this.id == "food"){
+		getFood();
+	};
 
 	tabs_nav.find('.current').removeClass('current');
 	$(this).addClass('current');
