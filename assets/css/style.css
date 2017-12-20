@@ -20,14 +20,14 @@ body {
 	/*height: 95vh;for scrolling ?*/
 }
 h1 {
-	background-color: rgba(150,150,150, 0.5);
+	background-color: rgba(150,150,150, 0.7);
 	border-radius: 12px;
 	color:  white;
 	font-family: 'Arsenal', sans-serif;
 	text-align: center;	
 }
 h1.top {
-	transform: rotate(360deg);
+	/*transform: rotate(360deg);*/
 
 	font-size: 30px;
 
@@ -189,7 +189,7 @@ header::after {
 .tabs .tabs-content {
 	clear: both;
 	/*display: inline-block;*/
-	margin-left: 4px;
+	margin-left: 3px;
 	min-width: 100%;
 }
 .tabs .tabs-content .tab{
@@ -206,6 +206,7 @@ header::after {
 }
 
 .scrollable {
+	height: 65vh;
 	max-height: 65vh;
 	overflow-y: scroll;
 }
