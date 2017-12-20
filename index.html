@@ -11,8 +11,6 @@
 
   	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
 
-	<script src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&language=en"></script>
-
 </head>
 <body>
 
@@ -26,76 +24,59 @@
 			<h1>CITY EXPLORER</h1>
 		</div>
 	</div>
+	<!-- <div class="row justify-content-center"> -->
+		<!-- <div class="col-4"> -->
+			<h1 class="frontpage">CITY EXPLORER</h1>
+		<!-- </div> -->
+		<!-- <div class="col-8"> -->
+			<form>
+			    <div class="form-group frontpage">
+					<div class="input-group">
+						<input id="city-autocomplete" type="text" class="form-control" placeholder="Enter your destined city" aria-label="City search">
+						<span class="input-group-btn">
+							<button class="btn btn-search" id="city-search" type="submit">
+								<img src="assets/images/search.png" class="btn-logo" alt="GO!">
+							</button>
+						</span>
+					</div>	
+				</div>
+		  	</form>
+		<!-- </div> -->
+	<!-- </div> -->
 	</header>
 	<main>
-		<form>
-		    <div class="form-group">
-				<div class="container">
-					<div class="row">
-						<div class="col-10 offset-1">
-							<div class="input-group">
-						      <input id="city-autocomplete" type="text" class="form-control" placeholder="Enter your destined city" aria-label="City search">
-						      <span class="input-group-btn">
-						        <button class="btn btn-search" id="city-search" type="submit">
-						        	<img src="assets/images/search.png" class="btn-logo" alt="GO!">
-						        </button>
-						      </span>
-							</div>	
-						</div>
-		    		</div>
-		    	</div>
-			</div>
-	  	</form>
-	
-<!-- 		<div class="row">
-			<div class="col-11 offset-1">
-				<p class="interest-title">Select your categories of interest</p>
-				<div id="interest-buttons">
-					<div class="btn-interest" id="weather">Weather</div>
-					<div class="btn-interest" id="food">Restaurants</div>
-					<div class="btn-interest" id="trails">Walking Trails</div>
-				</div>
-			
-			</div>
-		</div>
- -->	
-		<div class="tabs">
+		<div class="tabs" style="display: none">
 			<ul class="tabs-nav">
+				<li id="trails" class="tabs-anchor current">Walking Trails</li>
 				<li id="weather" class="tabs-anchor">Weather</li>
 				<li id="food" class="tabs-anchor">Restaurants</li>
-				<li id="trails" class="tabs-anchor current">Walking Trails</li>
 			</ul>
 			<div class="tabs-content">
-				<div class="tab" id="weather-result"></div>
-				<div class="tab" id="food-result"></div>
-  				<div class="tab" id="trails-result"></div>
+				<div class="tab container" id="trails-result">
+					<div class="row">
+						<div class="col-sm-12 col-md-6 left">
+							<div id="googleMapTrails" style="width:100%;height:100%;"></div>
+						</div>
+						<div class="col-sm-12 col-md-6 right scrollable"></div>
+					</div>
+				</div>
+				<div class="tab" id="weather-result">lalala</div>
+				<div class="tab" id="food-result">nananaq</div>
 			</div>
 		</div>
-
-<!-- <div id="trails_result"></div> -->
 
 	</main>
 </div><!-- wrapper end -->
 
-<footer class="footer">
+<!-- <footer class="footer">
 	<div class="container">
     	About Us | Help | Connect
 	</div>
 </footer>
+ -->
 
-<script>
-    var input = document.getElementById('city-autocomplete');
-    var autocomplete = new google.maps.places.Autocomplete(input,{types: ['(cities)']});
-    google.maps.event.addListener(autocomplete, 'place_changed', function(){
-        var place = autocomplete.getPlace();
-    });
-
-</script>
-
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.8.0/firebase.js"></script>
 
 <script src="assets/js/explorer.js"></script>
 
