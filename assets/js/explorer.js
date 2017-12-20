@@ -1,4 +1,5 @@
 
+
 // Initialize Firebase
 var config = {
 	apiKey: "AIzaSyBQNQixtPcDY1FVSTf98j_1QrYQcJwBrfk",
@@ -230,6 +231,9 @@ function renderFood(data){
 		var id = data.businesses[i].id;
 		var country = data.businesses[i].location.country;
 
+		// // Give weather values
+		// lon = data[i].lon;
+		// lat = data[i].lat;
 
 		var food_card = $("<div>").addClass("card trail")
 		food_card.attr("uid", id).attr("city", data.businesses[i].location.city);
@@ -251,6 +255,11 @@ tabs_nav.find('.tabs-anchor').on("click", function(event){
 
 	if(city_data != "" && this.id == "trails"){
 		getGoogleTrails();
+	}
+	else if(this.id == "weather"){
+		getWeather();
+		
+	}
 	} else if(city_data != "" && this.id == "food"){
 		getFood();
 	};
@@ -275,9 +284,28 @@ $("#city-search").on("click", function(event){
 	}
 });
 
-// $('#trails-result .right').on('activate.bs.scrollspy', function () {
-// 	marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
-// });
+function getWeather() {
+	console.log("run weather");
 
+	var settings = {
+		"url": "https://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+lon+"&APPID=fd262fdfe1750a09395cde502e14e98a",
+		// "method": "get"
+	};
+	$.ajax(settings)
+	.done(function(weather) {
+		console.log(weather);
+		renderWeather(weather.list);
+	})
+}
 
-
+function renderWeather(data){
+	for(var i=0; i<data.length; i++){
+		var date_time = data[i].dt_txt;
+		var [date, time] = date_time.split(" ");
+		// var date = data[i].dt_txt;
+		var fTemp = Math.floor(9*(data[i].main.temp_max - 273)/5 +32);
+		var weather_line = $("<p>");
+		weather_line.html(date + "<br>"+time+"<br>"+"max temp:"+fTemp+"&deg;");
+		$("#weather-result").append(weather_line);
+	}
+}
