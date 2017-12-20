@@ -238,7 +238,46 @@ function renderFood(data){
 		$("#food-result").append(food_card);
 	}
 }
+// === WEATHER (Alyna) ================== 
+function getWeather() {
+	console.log("run weather");
 
+	var settings = {
+		"url": "https://api.openweathermap.org/data/2.5/forecast?lat="+latitude+"&lon="+longitude+"&APPID="+weather_key,
+	};
+	$.ajax(settings)
+	.done(function(weather) {
+		console.log(weather);
+		renderWeather(weather.list);
+	})
+}
+
+function renderWeather(data){
+
+	console.log(data,"console weather here");
+
+	for(var i=0; i<data.length; i++){
+		var [date, time] =  data[i].dt_txt.split(" ");
+		var fTemp = Math.floor(9*(data[i].main.temp_max - 273)/5 +32);
+
+		var weather_line = $("<p>");
+
+		var hum = data[i].main.humidity;
+		var weatherType = data[i].weather[0].description;
+		var icon = data[i].weather[0].icon;
+
+		var weatherIcon = $("<img>").attr("src", "http://openweathermap.org/img/w/"+icon+".png");
+
+		weather_line.html(date + "<br>"+time+"<br>"+"max temp: "+fTemp+"&deg;"+"<br>"+"humidity: "+hum+"%"+"<br>"+weatherType);
+		
+		$("#weather-result").append(weather_line);
+		$("#weather-result").append(weatherIcon);
+		console.log(icon);
+
+	}
+}
+
+//=== end weather =======================
 
 // ====== TABS & Search button =======
 
@@ -251,7 +290,12 @@ tabs_nav.find('.tabs-anchor').on("click", function(event){
 
 	if(city_data != "" && this.id == "trails"){
 		getGoogleTrails();
-	} else if(city_data != "" && this.id == "food"){
+
+	} 
+	if(city_data != "" && this.id == "weather"){
+		getWeather();
+	}
+	else if(city_data != "" && this.id == "food"){
 		getFood();
 	};
 
