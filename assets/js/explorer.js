@@ -28,6 +28,8 @@ var city, latitude, longitude;
 var map;
 var service;
 
+//var city_marker = [];
+
 //loading google API + autocomplete on success
 $.getScript("https://maps.googleapis.com/maps/api/js?key="+google_key+"&libraries=places&language=en")
 	.done(function( script, textStatus ) {
@@ -45,6 +47,12 @@ $.getScript("https://maps.googleapis.com/maps/api/js?key="+google_key+"&librarie
 
 });
 //============================================
+// function getMarkerByPlaceId(id){
+// 	for(var i=0; i<city_marker.length; i++){
+// 		if(city_marker[i].id == id) return city_marker[i].m;
+// 	}
+// 	return 0;
+// }
 
 function renderMap(divMapId) {
 
@@ -64,16 +72,20 @@ function addTrailMarker(place) {
         position : place.geometry.location,
         map : map,
         title : place.name,
-        id : place.place_id
+        url : "#"+place.place_id
 	});
+	//city_marker.push({id: place.place_id, m: marker});
+
+	marker.setIcon('assets/images/green_marker.png');
+	// marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
 	// current_place = place.place_id;
   	google.maps.event.addListener(marker, 'click', function() {
   		//move right tab content on current location
   		console.log("marker clicked "+marker.id);
   		$("#trails-result .right").animate({
-        	scrollTop: $("#"+marker.id).offset().top
+        	scrollTop: $(marker.url).offset().top
         },
-        'slow');
+        1000);
   	});
 }
 
@@ -130,7 +142,7 @@ function renderGoogleTrails(results, status) {
 			}
 
 			var trail_card = $("<div>").addClass("card trail")
-			trail_card.attr("id", id);//.attr("city", city);
+			trail_card.attr("id", id);
 			
 			var trail_card_name = $("<div>").addClass("card-header").html( name );
 			var map_icon = $("<img>").attr("src", "assets/images/google_marker2.png").addClass("trail_marker");
@@ -165,6 +177,7 @@ function renderGoogleTrails(results, status) {
 
 			trail_card.append(trail_features_list);
 			$("#trails-result .right").append(trail_card);
+			//$("#trails-result .right").scrollspy({ target: '#googleMapTrails' })
 
 		}
 	}
@@ -224,7 +237,46 @@ function renderFood(data){
 		$("#food-result").append(food_card);
 	}
 }
+// === WEATHER (Alyna) ================== 
+function getWeather() {
+	console.log("run weather");
 
+	var settings = {
+		"url": "https://api.openweathermap.org/data/2.5/forecast?lat="+latitude+"&lon="+longitude+"&APPID="+weather_key,
+	};
+	$.ajax(settings)
+	.done(function(weather) {
+		console.log(weather);
+		renderWeather(weather.list);
+	})
+}
+
+function renderWeather(data){
+
+	console.log(data,"console weather here");
+
+	for(var i=0; i<data.length; i++){
+		var [date, time] =  data[i].dt_txt.split(" ");
+		var fTemp = Math.floor(9*(data[i].main.temp_max - 273)/5 +32);
+
+		var weather_line = $("<p>");
+
+		var hum = data[i].main.humidity;
+		var weatherType = data[i].weather[0].description;
+		var icon = data[i].weather[0].icon;
+
+		var weatherIcon = $("<img>").attr("src", "http://openweathermap.org/img/w/"+icon+".png");
+
+		weather_line.html(date + "<br>"+time+"<br>"+"max temp: "+fTemp+"&deg;"+"<br>"+"humidity: "+hum+"%"+"<br>"+weatherType);
+		
+		$("#weather-result").append(weather_line);
+		$("#weather-result").append(weatherIcon);
+		console.log(icon);
+
+	}
+}
+
+//=== end weather =======================
 
 // ====== TABS & Search button =======
 
@@ -237,7 +289,12 @@ tabs_nav.find('.tabs-anchor').on("click", function(event){
 
 	if(city_data != "" && this.id == "trails"){
 		getGoogleTrails();
-	} else if(city_data != "" && this.id == "food"){
+
+	} 
+	if(city_data != "" && this.id == "weather"){
+		getWeather();
+	}
+	else if(city_data != "" && this.id == "food"){
 		getFood();
 	};
 
@@ -260,3 +317,10 @@ $("#city-search").on("click", function(event){
 		$(".current").click();
 	}
 });
+
+// $('#trails-result .right').on('activate.bs.scrollspy', function () {
+// 	marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+// });
+
+
+
