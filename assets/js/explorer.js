@@ -174,13 +174,12 @@ function getFood(){
 	
 	console.log("starting Yelp API");
 
-	var key = "XUuOf3VXVkmshrHJYmJzcpGFl6Qgp1TZAeLjsnx7RxEWfCbevw";
-	var limit = 30;
 
 	var city_auto = $("#city-autocomplete").val();
 	var city_prop = city_auto.split(',');
 	var city = city_prop[0];
-	const proxyurl = "https://cors-anywhere.herokuapp.com/";
+	// const proxyurl = "https://cors-anywhere.herokuapp.com/";
+	const proxyurl = "https://shielded-hamlet-43668.herokuapp.com/";
 
 	var settings = {
 	  "async": true,
