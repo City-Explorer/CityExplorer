@@ -78,12 +78,12 @@ function addTrailMarker(place) {
 
 	marker.setIcon('assets/images/green_marker.png');
 	// marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
-	// current_place = place.place_id;
+
   	google.maps.event.addListener(marker, 'click', function() {
   		//move right tab content on current location
-  		console.log("marker clicked "+marker.id);
+  		console.log("marker clicked "+marker.url);
   		$("#trails-result .right").animate({
-        	scrollTop: $(marker.url).offset().top
+        	scrollTop: $("#trails-result .right").scrollTop() + $(marker.url).offset().top -150 
         },
         1000);
   	});
@@ -177,7 +177,6 @@ function renderGoogleTrails(results, status) {
 
 			trail_card.append(trail_features_list);
 			$("#trails-result .right").append(trail_card);
-			//$("#trails-result .right").scrollspy({ target: '#googleMapTrails' })
 
 		}
 	}
@@ -187,10 +186,10 @@ function getFood(){
 	
 	console.log("starting Yelp API");
 
-
 	var city_auto = $("#city-autocomplete").val();
 	var city_prop = city_auto.split(',');
 	var city = city_prop[0];
+
 	// const proxyurl = "https://cors-anywhere.herokuapp.com/";
 	const proxyurl = "https://shielded-hamlet-43668.herokuapp.com/";
 
@@ -317,10 +316,5 @@ $("#city-search").on("click", function(event){
 		$(".current").click();
 	}
 });
-
-// $('#trails-result .right').on('activate.bs.scrollspy', function () {
-// 	marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
-// });
-
 
 
