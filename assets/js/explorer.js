@@ -81,7 +81,7 @@ function addTrailMarker(place) {
 
   	google.maps.event.addListener(marker, 'click', function() {
   		//move right tab content on current location
-  		console.log("marker clicked "+marker.url);
+  		//console.log("marker clicked "+marker.url);
   		$("#trails-result .right").animate({
         	scrollTop: $("#trails-result .right").scrollTop() + $(marker.url).offset().top -150 
         },
@@ -123,12 +123,12 @@ function getGoogleTrails(){
 function renderGoogleTrails(results, status) {
 
 	if (status == google.maps.places.PlacesServiceStatus.OK) {
-	
+
 		$("#trails-result .right").empty();
 
 	    for (var i = 0; i < results.length; i++) {
 	    	var place = results[i];
-	    	console.log(place);
+	    	//console.log(place);
 
 			addTrailMarker(place);
 
@@ -252,27 +252,73 @@ function getWeather() {
 
 function renderWeather(data){
 
-	console.log(data,"console weather here");
+	//console.log(data,"console weather here");
 
-	for(var i=0; i<data.length; i++){
-		var [date, time] =  data[i].dt_txt.split(" ");
-		var fTemp = Math.floor(9*(data[i].main.temp_max - 273)/5 +32);
+	// for(var i=0; i<data.length; i++){
+	// 	var [date, time] =  data[i].dt_txt.split(" ");
+	// 	var fTemp = Math.floor(9*(data[i].main.temp_max - 273)/5 +32);
 
-		var weather_line = $("<p>");
+	// 	var weather_line = $("<p>");
 
-		var hum = data[i].main.humidity;
-		var weatherType = data[i].weather[0].description;
-		var icon = data[i].weather[0].icon;
+	// 	var hum = data[i].main.humidity;
+	// 	var weatherType = data[i].weather[0].description;
+	// 	var icon = data[i].weather[0].icon;
 
-		var weatherIcon = $("<img>").attr("src", "http://openweathermap.org/img/w/"+icon+".png");
+	// 	var weatherIcon = $("<img>").attr("src", "http://openweathermap.org/img/w/"+icon+".png");
 
-		weather_line.html(date + "<br>"+time+"<br>"+"max temp: "+fTemp+"&deg;"+"<br>"+"humidity: "+hum+"%"+"<br>"+weatherType);
+	// 	weather_line.html(date + "<br>"+time+"<br>"+"Temp: "+fTemp+"&deg;F"+"<br>"+"Humidity: "+hum+"%"+"<br>"+weatherType);
 		
-		$("#weather-result").append(weather_line);
-		$("#weather-result").append(weatherIcon);
-		console.log(icon);
+	// 	$("#weather-result").append(weather_line);
+	// 	$("#weather-result").append(weatherIcon);
+	// 	console.log(icon);
+	// }
 
+	var weather_table = $('<table>').addClass('weather');
+	var counter = 0;
+	for(var w_day=0; w_day<5; w_day++){
+		var w_row = $('<tr>');
+		var [date, time] =  data[counter].dt_txt.split(" ");
+
+		var date_td = $('<td>').addClass('date');
+		date_td.html(date);
+		w_row.append(date_td);
+
+		for(var w_tm = 0; w_tm<=21; w_tm+=3){
+			var [date, time] =  data[counter].dt_txt.split(" ");
+			var fTemp = Math.floor(9*(data[counter].main.temp - 273)/5 +32);
+
+			var [t1, t2, t3] = time.split(':');
+			
+			var hum = data[counter].main.humidity;
+			var weatherType = data[counter].weather[0].description;
+			var icon = data[counter].weather[0].icon;
+			
+			var w_col = $('<td>');
+			if(parseInt(t1) === w_tm){
+				counter++;
+				var temp_p = $('<p>').addClass('temp');
+				temp_p.html(fTemp+"&deg;F");
+
+				var hum_p = $('<p>').addClass('hum');
+				hum_p.html("Humidity: "+hum);
+				var icon_img = $("<img>").attr("src", "http://openweathermap.org/img/w/"+icon+".png");
+
+				temp_p.append(icon_img);
+				w_col.append(temp_p);
+				w_col.append(hum_p);
+
+			}
+			else{
+				w_col.html("&nbsp;");
+				//create empty td
+			}
+			w_row.append(w_col);
+		}
+		weather_table.append(w_row);
 	}
+	$("#weather-result").empty();
+	$("#weather-result").append(weather_table);
+
 }
 
 //=== end weather =======================
