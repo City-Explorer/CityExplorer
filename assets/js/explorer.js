@@ -16,43 +16,32 @@ var google_key = "";
 var weather_key ="";
 var food_key="";
 
-//getting API keys for db
 db.ref('/api_keys').on("value", function(snap_google){
 	google_key = snap_google.val().google;
 	weather_key = snap_google.val().weather;
 	food_key = snap_google.val().food;
+
+	$.getScript("https://maps.googleapis.com/maps/api/js?key="+google_key+"&libraries=places&language=en")
+		.done(function( script, textStatus ) {
+			// === city autocomplete====
+			var input = document.getElementById('city-autocomplete');
+			var autocomplete = new google.maps.places.Autocomplete(input,{types: ['(cities)']});
+			google.maps.event.addListener(autocomplete, 'place_changed', function(){
+			    var place = autocomplete.getPlace();
+			});
+
+		    console.log( textStatus );
+		})
+		.fail(function( jqxhr, settings, exception ) {
+			console.log("Triggered ajaxError handler.");
+
+	});
 });
 
 //geolocation global variables
 var city, latitude, longitude;
 var map;
 var service;
-
-//var city_marker = [];
-
-//loading google API + autocomplete on success
-$.getScript("https://maps.googleapis.com/maps/api/js?key="+google_key+"&libraries=places&language=en")
-	.done(function( script, textStatus ) {
-		// === city autocomplete====
-		var input = document.getElementById('city-autocomplete');
-		var autocomplete = new google.maps.places.Autocomplete(input,{types: ['(cities)']});
-		google.maps.event.addListener(autocomplete, 'place_changed', function(){
-		    var place = autocomplete.getPlace();
-		});
-
-	    console.log( textStatus );
-	})
-	.fail(function( jqxhr, settings, exception ) {
-		console.log("Triggered ajaxError handler.");
-
-});
-//============================================
-// function getMarkerByPlaceId(id){
-// 	for(var i=0; i<city_marker.length; i++){
-// 		if(city_marker[i].id == id) return city_marker[i].m;
-// 	}
-// 	return 0;
-// }
 
 function renderMap(divMapId) {
 
