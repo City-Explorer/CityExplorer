@@ -16,6 +16,7 @@ body {
 	padding-top: 10px;
 	padding-bottom: 5px;
 	margin-top: 5px;
+	/*width: 90vh;*/
 	/*margin-bottom: 100px;*/
 	/*height: 95vh;for scrolling ?*/
 }
@@ -191,6 +192,7 @@ header::after {
 	/*display: inline-block;*/
 	margin-left: 3px;
 	min-width: 100%;
+	/*height: 70vh;*/
 }
 .tabs .tabs-content .tab{
 	position: relative;
@@ -199,15 +201,19 @@ header::after {
 	border: 2px solid rgba(255,255,255, 0.4);
 	border-top: 10px solid #93cffd;
 	border-top-right-radius: 12px;
-	/*background-color: rgba(150,150,150, 0.3);*/
 	background-color: rgba(150,150,150, 0.6);
 	/*max-height: 85vh;*/
 	min-width: 100%;
 }
 
 .scrollable {
-	height: 65vh;
-	max-height: 65vh;
+	height: 70vh;
+	/*max-height: 65vh;*/
+	overflow-y: scroll;
+}
+.scrollable_tab {
+	height: 78vh;
+	/*max-height: 65vh;*/
 	overflow-y: scroll;
 }
 .right {
@@ -218,7 +224,7 @@ header::after {
 	border: 2px solid rgba(255,255,255, 0.2);
 	padding: 5px;
 	border-radius: 5px;
-	height: 65vh;
+	height: 70vh;
 }
 /* ============== End Tabs =========================*/
 /* --------------Star Rating ------------------------*/
@@ -234,6 +240,7 @@ span.stars span {
 }
 
 /* ------------end star --------------------------*/
+
 /* --------------Yelp CSS ------------------------*/
 .yelp_images{
 	width: 150px;
@@ -244,6 +251,48 @@ span.stars span {
 	float: none;
 }
 .yelp_clear_float{
-	clear: all;
+  clear: all;}
 	
+
+
+/*-------------  Weather  --------------------*/
+table.weather {
+	border-collapse: unset;
+}
+table.weather, td {
+	border: 2px solid rgba(255,255,255, 0.2);
+}
+td {
+	background: #95D0FB;
+	padding: 0px 3px 0px 3px;
+	line-height: 1;
+	text-align: center;	
+}
+
+p.temp {
+	font-size: 17px;
+	font-weight: bold;
+	display: block;
+}
+p.hum {
+	font-size: 15px;
+}
+p.weatherType {
+	font-size: 15px;
+	font-style: oblique;
+}
+td.date {
+	font-size: 16px;
+	width: 12%;
+	text-align: center;
+}
+td.time {
+	font-size: 16px;
+	text-align: center;
+	line-height: 2;
+}
+td.empty {
+	background-color: rgba(255,255,255, 0);
+	border: 0px;
+
 }
