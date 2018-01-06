@@ -200,14 +200,18 @@ header::after {
 	border: 2px solid rgba(255,255,255, 0.4);
 	border-top: 10px solid #93cffd;
 	border-top-right-radius: 12px;
-	/*background-color: rgba(150,150,150, 0.3);*/
 	background-color: rgba(150,150,150, 0.6);
 	/*max-height: 85vh;*/
 	min-width: 100%;
 }
 
 .scrollable {
-	height: 65vh;
+	height: 70vh;
+	/*max-height: 65vh;*/
+	overflow-y: scroll;
+}
+.scrollable_tab {
+	height: 78vh;
 	/*max-height: 65vh;*/
 	overflow-y: scroll;
 }
@@ -219,7 +223,7 @@ header::after {
 	border: 2px solid rgba(255,255,255, 0.2);
 	padding: 5px;
 	border-radius: 5px;
-	height: 65vh;
+	height: 70vh;
 }
 /* ============== End Tabs =========================*/
 /* --------------Star Rating ------------------------*/
@@ -236,19 +240,22 @@ span.stars span {
 
 /* ------------end star --------------------------*/
 
-.weather td {
-	border: 3px solid rgba(255,255,255, 0.2);
-	background: #95D0FB;
-	padding: 0px 6px 0px 6px;
-	
-} 
-/*table p {
-	padding: 4px;
+/*-------------  Weather  --------------------*/
+table.weather {
+	border-collapse: unset;
 }
-*/
+table.weather, td {
+	border: 2px solid rgba(255,255,255, 0.2);
+}
+td {
+	background: #95D0FB;
+	padding: 0px 4px 0px 4px;
+	line-height: 1;
+	text-align: center;	
+}
 p.time {
 	font-size: 15px;
-	padding: 5px 0px 0px 0px;
+	text-align: center;
 }
 p.temp {
 	font-size: 15px;
@@ -271,4 +278,9 @@ td.time {
 	font-size: 17px;
 	width: 12%;
 	text-align: center;
+	line-height: 2;
+}
+td.empty {
+	background-color: rgba(255,255,255, 0);
+	border: 0px;
 }

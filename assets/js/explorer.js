@@ -243,10 +243,12 @@ function renderWeather(data){
 
     var weather_table = $('<table>').addClass('weather');
 
-	var first_row = $("<tr>").addClass('time');
+	var first_row = $("<tr>");
 	var time_labels = ["&nbsp;", "12:00 am", "3:00 am", "6:00 am", "9:00 am", "12:00 pm", "3:00 pm", "6:00 pm", "9:00 pm"];
 	for(var tm = 0; tm<time_labels.length; tm++){
 		var time_col = $('<td>').html(time_labels[tm]);
+		if(tm==0) time_col.addClass('empty');
+		time_col.addClass('time');
 		first_row.append(time_col);
 	}
 	weather_table.append(first_row);
@@ -295,7 +297,7 @@ function renderWeather(data){
 
 			}
 			else{
-				w_col.html("&nbsp;");
+				w_col.html("&nbsp;");//.addClass('empty');
 				//create empty td
 			}
 			w_row.append(w_col);
