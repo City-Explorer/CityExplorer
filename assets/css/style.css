@@ -234,5 +234,16 @@ span.stars span {
 }
 
 /* ------------end star --------------------------*/
-
-
+/* --------------Yelp CSS ------------------------*/
+.yelp_images{
+	width: 150px;
+	height: 150px;
+	
+}
+.yelp_title{
+	float: none;
+}
+.yelp_clear_float{
+	clear: all;
+	
+}
