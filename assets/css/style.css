@@ -16,6 +16,7 @@ body {
 	padding-top: 10px;
 	padding-bottom: 5px;
 	margin-top: 5px;
+	/*width: 90vh;*/
 	/*margin-bottom: 100px;*/
 	/*height: 95vh;for scrolling ?*/
 }
@@ -249,34 +250,33 @@ table.weather, td {
 }
 td {
 	background: #95D0FB;
-	padding: 0px 4px 0px 4px;
+	padding: 0px 6px 0px 6px;
 	line-height: 1;
 	text-align: center;	
 }
 p.time {
-	font-size: 15px;
+	font-size: 16px;
 	text-align: center;
 }
 p.temp {
-	font-size: 15px;
+	font-size: 16px;
 	font-weight: bold;
 	display: block;
 }
 p.hum {
-	font-size: 15px;
+	font-size: 16px;
 }
 p.weatherType {
-	font-size: 15px;
+	font-size: 16px;
 	font-style: oblique;
 }
 td.date {
-	font-size: 17px;
+	font-size: 16px;
 	width: 12%;
 	text-align: center;
 }
 td.time {
-	font-size: 17px;
-	width: 12%;
+	font-size: 16px;
 	text-align: center;
 	line-height: 2;
 }

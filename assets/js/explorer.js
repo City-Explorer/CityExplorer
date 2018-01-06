@@ -17,7 +17,7 @@ var weather_key ="";
 var food_key="";
 
 db.ref('/api_keys').on("value", function(snap_google){
-	google_key = snap_google.val().google;
+	// google_key = snap_google.val().google;
 	weather_key = snap_google.val().weather;
 	food_key = snap_google.val().food;
 
