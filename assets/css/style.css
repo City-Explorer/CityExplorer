@@ -250,14 +250,11 @@ table.weather, td {
 }
 td {
 	background: #95D0FB;
-	padding: 0px 4px 0px 4px;
+	padding: 0px 3px 0px 3px;
 	line-height: 1;
 	text-align: center;	
 }
-/*p.time {
-	font-size: 16px;
-	text-align: center;
-}*/
+
 p.temp {
 	font-size: 17px;
 	font-weight: bold;
