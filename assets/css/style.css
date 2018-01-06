@@ -237,21 +237,38 @@ span.stars span {
 /* ------------end star --------------------------*/
 
 .weather td {
-	border: 2px solid rgba(255,255,255, 0.2);
-	background: blue;
-	padding-left: 10px;
+	border: 3px solid rgba(255,255,255, 0.2);
+	background: #95D0FB;
+	padding: 0px 6px 0px 6px;
 	
 } 
-table p {
-	padding: 10px 10px 0px 10px;
+/*table p {
+	padding: 4px;
+}
+*/
+p.time {
+	font-size: 15px;
+	padding: 5px 0px 0px 0px;
 }
 p.temp {
-	font-size: 20px;
+	font-size: 15px;
+	font-weight: bold;
 	display: block;
 }
 p.hum {
-	font-size: 20px;
+	font-size: 15px;
+}
+p.weatherType {
+	font-size: 15px;
+	font-style: oblique;
 }
 td.date {
-	width: 50px;
+	font-size: 17px;
+	width: 12%;
+	text-align: center;
+}
+td.time {
+	font-size: 17px;
+	width: 12%;
+	text-align: center;
 }
