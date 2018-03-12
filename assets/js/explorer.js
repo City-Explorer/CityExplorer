@@ -16,6 +16,11 @@ var google_key = "";
 var weather_key ="";
 var food_key="";
 
+var org_city;
+//getting API keys for db
+
+
+
 db.ref('/api_keys').on("value", function(snap_google){
 	google_key = snap_google.val().google;
 	weather_key = snap_google.val().weather;
@@ -176,6 +181,8 @@ function getFood(){
 	var city_prop = city_auto.split(',');
 	var city = city_prop[0];
 
+	org_city = city;
+
 	// const proxyurl = "https://cors-anywhere.herokuapp.com/";
 	const proxyurl = "https://shielded-hamlet-43668.herokuapp.com/";
 
@@ -183,7 +190,7 @@ function getFood(){
 	  "async": true,
 	  "crossDomain": true,
 	  // "url": "https://trailapi-trailapi.p.mashape.com/?limit="+limit+"&q%5Bcity_cont%5D="+city,
-	  "url":proxyurl+"https://api.yelp.com/v3/businesses/search?location="+city,
+	  "url":proxyurl+"https://api.yelp.com/v3/businesses/search?location="+city+"&categories=restaurants,All",
 	  "method":"GET",
 	  "headers": {
 	  	"Authorization":"Bearer jtdOtf_Nw2aFD-KE_uZwAWGiQB2cNb9sApKVKV_3Bzbhlg0fjZ6lIqmNdziHcaBr47Hd9F3Myyt2eWEm_HmNmoRjMA2bc_znA3M1kYzLKcFxJJ-Mx9wLkmd68JswWnYx",
@@ -207,19 +214,65 @@ function renderFood(data){
 	for(var i=0; i<data.businesses.length; i++){
 
 		var name = data.businesses[i].name;
-		var descr = "Rating: "+data.businesses[i].rating;
+		var rating = "Rating: "+data.businesses[i].rating;
 		var directions = "Address: "+data.businesses[i].location.address1+","+data.businesses[i].location.city+","+data.businesses[i].location.zip_code;
 		var id = data.businesses[i].id;
 		var country = data.businesses[i].location.country;
+		var yelp_image = data.businesses[i].image_url;
+		
 
+		
 
-		var food_card = $("<div>").addClass("card trail")
+	
+		const proxyurl = "https://shielded-hamlet-43668.herokuapp.com/";
+
+		var settings = {
+		  "async": true,
+		  "crossDomain": true,
+		  "url":proxyurl+"https://api.yelp.com/v3/businesses/"+id+"/reviews",	  
+		  "method":"GET",
+		  "headers": {
+		  	"Authorization":"Bearer jtdOtf_Nw2aFD-KE_uZwAWGiQB2cNb9sApKVKV_3Bzbhlg0fjZ6lIqmNdziHcaBr47Hd9F3Myyt2eWEm_HmNmoRjMA2bc_znA3M1kYzLKcFxJJ-Mx9wLkmd68JswWnYx",
+		  }
+		}
+		var review0;
+		$.ajax(settings)
+		.done(function (response_food) {
+		 	console.log(response_food.reviews[0].text);
+		 	 review0 = response_food.reviews[0].text;
+		 	
+		})
+		.fail(function(error){
+	    	console.log(error.code);
+	    });
+	    var food_card = $("<div>").addClass("card trail");
+		// var food_card1 = $("<div>").addClass("card trail");
 		food_card.attr("uid", id).attr("city", data.businesses[i].location.city);
 		var food_card_name = $("<div>").addClass("card-header").html( name );
-		food_card.append(food_card_name);
+		var food_card_review = $("<p>").addClass("card-header").html(review0);
+		var food_location = $("<div>").addClass("list-group yelp_clear_float col-sm-12").html(directions);
+		var food_image = $("<img>").addClass("list-group yelp_images yelp_title").attr("src",yelp_image);
+				
+		// food_card1.append(food_card_name);
+		// food_card1.append(food_location);
+		food_card.append(food_image);
 		$("#food-result").append(food_card);
+		// $("yelp_info").append(food_card1);
+		food_card.append(food_card_name);	
+		food_card.append(food_location);
+		
+		if( rating ){
+				var yelp_stars_size = Math.max(0, (Math.min(6, rating))) * 16;
+				var yelp_rating_stars = $("<span>").html("<span style='width:"+yelp_stars_size+"px'></span>");
+				yelp_rating_stars.addClass("stars");
+				var yelp_rating = $("<li>").addClass("list-group-item trail_rating").html("<span>"+rating+"</span>");
+				yelp_rating.append( yelp_rating_stars );
+				food_card.append(yelp_rating);
+				food_card.append(food_card_review);
+			}
 	}
-}
+	}
+
 // === WEATHER (Alyna) ================== 
 function getWeather() {
 	console.log("run weather");

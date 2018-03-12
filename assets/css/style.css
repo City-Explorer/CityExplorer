@@ -241,6 +241,20 @@ span.stars span {
 
 /* ------------end star --------------------------*/
 
+/* --------------Yelp CSS ------------------------*/
+.yelp_images{
+	width: 150px;
+	height: 150px;
+	
+}
+.yelp_title{
+	float: none;
+}
+.yelp_clear_float{
+  clear: all;}
+	
+
+
 /*-------------  Weather  --------------------*/
 table.weather {
 	border-collapse: unset;
@@ -280,4 +294,5 @@ td.time {
 td.empty {
 	background-color: rgba(255,255,255, 0);
 	border: 0px;
+
 }
