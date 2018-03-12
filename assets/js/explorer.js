@@ -109,9 +109,8 @@ function getGoogleTrails(){
 
 function renderGoogleTrails(results, status) {
 
+	$("#trails-result .right").empty();
 	if (status == google.maps.places.PlacesServiceStatus.OK) {
-
-		$("#trails-result .right").empty();
 
 	    for (var i = 0; i < results.length; i++) {
 	    	var place = results[i];
@@ -195,8 +194,6 @@ function getFood(){
 	.done(function (response_food) {
 	 	console.log(response_food);
 	 	renderFood(response_food);
-
-
 	})
 	.fail(function(error){
     	console.log(error.code);
