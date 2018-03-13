@@ -247,6 +247,7 @@ span.stars span {
 	height: 150px;
 	float: left;
 	margin-right: 10px;
+	padding-right: 15px;
 	
 }
 .yelp_title{
@@ -256,7 +257,9 @@ span.stars span {
   clear: all;
 }
 	
-
+.review {
+	list-style-type: disc;
+}
 
 /*-------------  Weather  --------------------*/
 table.weather {

@@ -70,14 +70,12 @@ function addTrailMarker(place) {
         title : place.name,
         url : "#"+place.place_id
 	});
-	//city_marker.push({id: place.place_id, m: marker});
 
 	marker.setIcon('assets/images/green_marker.png');
 	// marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
 
   	google.maps.event.addListener(marker, 'click', function() {
   		//move right tab content on current location
-  		//console.log("marker clicked "+marker.url);
   		$("#trails-result .right").animate({
         	scrollTop: $("#trails-result .right").scrollTop() + $(marker.url).offset().top -150 
         },
@@ -221,8 +219,14 @@ function get_rstrnt_review(id, i){
 		$.ajax(settings)
 		.done(function (response_food) {
 			if(response_food.reviews && response_food.reviews.length){
-			 	var review = response_food.reviews[0].text;
-			 	$("#fr_"+id).html('<strong>random review: </strong>'+review);
+				var review_list = $("<ul>");
+				var n=Math.min(response_food.reviews.length, 3);
+				for(var j=0; j<n; j++){
+				 	var review = response_food.reviews[j].text;
+				 	var rev_li = $('<li>').html(review).addClass('review');
+				 	review_list.append(rev_li);
+				}
+				$("#fr_"+id).append(review_list);
 		 	}
 		})
 		.fail(function(error){
