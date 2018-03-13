@@ -16,13 +16,10 @@ var google_key = "";
 var weather_key ="";
 var food_key="";
 
-var org_city;
 //getting API keys for db
 
-
-
 db.ref('/api_keys').on("value", function(snap_google){
-	google_key = snap_google.val().google;
+	// google_key = snap_google.val().google;
 	weather_key = snap_google.val().weather;
 	food_key = snap_google.val().food;
 
@@ -35,20 +32,27 @@ db.ref('/api_keys').on("value", function(snap_google){
 			    var place = autocomplete.getPlace();
 			});
 
-		    console.log( textStatus );
+		    console.log( "google lib load: "+textStatus );
 		})
-		.fail(function( jqxhr, settings, exception ) {
+		.fail(function( err, settings, exception ) {
 			console.log("Triggered ajaxError handler.");
 
 	});
 });
 
 //geolocation global variables
-var city, latitude, longitude;
+// var city, latitude, longitude;
 var map;
 var service;
 
-function renderMap(divMapId) {
+var current_city = {
+	name : '',
+	trails : 0,
+	food : 0,
+	weather : 0
+}
+
+function renderMap(divMapId, latitude, longitude) {
 
 	var mapProp = {
 	    center: new google.maps.LatLng(latitude,longitude),
@@ -81,23 +85,22 @@ function addTrailMarker(place) {
   	});
 }
 
-function getGoogleTrails(){
+function getGoogleTrails(city){
 
-    city = document.getElementById('city-autocomplete').value;
-
+    console.log("~~ Trails new search!");
 	//get latitude & longitude
 	var geocoder = new google.maps.Geocoder();
 	geocoder.geocode({ 'address': city }, function (results, status) {
 		
-		console.log(status, results);
+		console.log("geocoder: ", status, results);
     	
     	if (status == google.maps.GeocoderStatus.OK) {
-			latitude = results[0].geometry.location.lat();
-			longitude = results[0].geometry.location.lng();
+			var latitude = results[0].geometry.location.lat();
+			var longitude = results[0].geometry.location.lng();
 
 			var city_loc = new google.maps.LatLng(latitude, longitude);
 
-			renderMap("googleMapTrails");
+			renderMap("googleMapTrails", latitude, longitude);
 
 			var request = {
 				location: city_loc,
@@ -173,23 +176,17 @@ function renderGoogleTrails(results, status) {
 	}
 }
 
-function getFood(){
+function getFood(city_auto){
 	
-	console.log("starting Yelp API");
+    console.log("~~ Food new search!");
 
-	var city_auto = $("#city-autocomplete").val();
-	var city_prop = city_auto.split(',');
-	var city = city_prop[0];
+	var city = city_auto.split(',')[0];
 
-	org_city = city;
-
-	// const proxyurl = "https://cors-anywhere.herokuapp.com/";
 	const proxyurl = "https://shielded-hamlet-43668.herokuapp.com/";
 
 	var settings = {
 	  "async": true,
 	  "crossDomain": true,
-	  // "url": "https://trailapi-trailapi.p.mashape.com/?limit="+limit+"&q%5Bcity_cont%5D="+city,
 	  "url":proxyurl+"https://api.yelp.com/v3/businesses/search?location="+city+"&categories=restaurants,All",
 	  "method":"GET",
 	  "headers": {
@@ -199,7 +196,7 @@ function getFood(){
 
 	$.ajax(settings)
 	.done(function (response_food) {
-	 	console.log(response_food);
+	 	// console.log(response_food);
 	 	renderFood(response_food);
 	})
 	.fail(function(error){
@@ -207,25 +204,11 @@ function getFood(){
     });
 }
 
-function renderFood(data){
+function get_rstrnt_review(id, i){
 
-	$("#food-result").empty();
+	setTimeout(function(){
 
-	for(var i=0; i<data.businesses.length; i++){
-
-		var name = data.businesses[i].name;
-		var rating = "Rating: "+data.businesses[i].rating;
-		var directions = "Address: "+data.businesses[i].location.address1+","+data.businesses[i].location.city+","+data.businesses[i].location.zip_code;
-		var id = data.businesses[i].id;
-		var country = data.businesses[i].location.country;
-		var yelp_image = data.businesses[i].image_url;
-		
-
-		
-
-	
 		const proxyurl = "https://shielded-hamlet-43668.herokuapp.com/";
-
 		var settings = {
 		  "async": true,
 		  "crossDomain": true,
@@ -235,56 +218,95 @@ function renderFood(data){
 		  	"Authorization":"Bearer jtdOtf_Nw2aFD-KE_uZwAWGiQB2cNb9sApKVKV_3Bzbhlg0fjZ6lIqmNdziHcaBr47Hd9F3Myyt2eWEm_HmNmoRjMA2bc_znA3M1kYzLKcFxJJ-Mx9wLkmd68JswWnYx",
 		  }
 		}
-		var review0;
 		$.ajax(settings)
 		.done(function (response_food) {
-		 	console.log(response_food.reviews[0].text);
-		 	 review0 = response_food.reviews[0].text;
-		 	
+			if(response_food.reviews && response_food.reviews.length){
+			 	var review = response_food.reviews[0].text;
+			 	$("#fr_"+id).html('<strong>random review: </strong>'+review);
+		 	}
 		})
 		.fail(function(error){
-	    	console.log(error.code);
-	    });
-	    var food_card = $("<div>").addClass("card trail");
-		// var food_card1 = $("<div>").addClass("card trail");
-		food_card.attr("uid", id).attr("city", data.businesses[i].location.city);
-		var food_card_name = $("<div>").addClass("card-header").html( name );
-		var food_card_review = $("<p>").addClass("card-header").html(review0);
-		var food_location = $("<div>").addClass("list-group yelp_clear_float col-sm-12").html(directions);
-		var food_image = $("<img>").addClass("list-group yelp_images yelp_title").attr("src",yelp_image);
-				
-		// food_card1.append(food_card_name);
-		// food_card1.append(food_location);
-		food_card.append(food_image);
-		$("#food-result").append(food_card);
-		// $("yelp_info").append(food_card1);
+	    	console.log(error);
+		});
+
+	}, 300*i);
+}
+
+function renderFood(data){
+
+	$("#food-result").empty();
+
+	for(var i=0; i<data.businesses.length; i++){
+
+		var cur_restaurant = data.businesses[i];
+
+		var food_card = $("<div>").addClass("card trail");
+		food_card.attr("uid", cur_restaurant.id).attr("city", cur_restaurant.location.city);
+
+		var food_card_name = $("<div>").addClass("card-header").html(cur_restaurant.name );
 		food_card.append(food_card_name);	
-		food_card.append(food_location);
 		
-		if( rating ){
-				var yelp_stars_size = Math.max(0, (Math.min(6, rating))) * 16;
-				var yelp_rating_stars = $("<span>").html("<span style='width:"+yelp_stars_size+"px'></span>");
-				yelp_rating_stars.addClass("stars");
-				var yelp_rating = $("<li>").addClass("list-group-item trail_rating").html("<span>"+rating+"</span>");
-				yelp_rating.append( yelp_rating_stars );
-				food_card.append(yelp_rating);
-				food_card.append(food_card_review);
-			}
-	}
-	}
+		food_features_list = $("<ul>").addClass("list-group");
 
-// === WEATHER (Alyna) ================== 
-function getWeather() {
-	console.log("run weather");
+		var food_descr = $("<li>").addClass("list-group-item");
+		var imageRef = cur_restaurant.image_url;
+		if(imageRef) {
+			var food_image = $("<img>").attr("src",cur_restaurant.image_url);
+			food_image.addClass("yelp_images fluid");
+			food_descr.append(food_image);
+		}
+		// var food_review = $("<div>").addClass("trail_descr").html(review);
+		var food_review = $("<div>").addClass("trail_descr");
+		food_review.attr("id", "fr_"+cur_restaurant.id);
+		food_descr.append(food_review);
 
-	var settings = {
-		"url": "https://api.openweathermap.org/data/2.5/forecast?lat="+latitude+"&lon="+longitude+"&APPID="+weather_key,
-	};
-	$.ajax(settings)
-	.done(function(weather) {
-		console.log(weather);
-		renderWeather(weather.list);
-	})
+		food_features_list.append(food_descr);
+
+		if( cur_restaurant.rating ){
+				var stars_size = Math.max(0, (Math.min(6, cur_restaurant.rating))) * 16;
+				var rating_stars = $("<span>").html("<span style='width:"+stars_size+"px'></span>");
+				rating_stars.addClass("stars");
+				var yelp_rating = $("<li>").addClass("list-group-item trail_rating").html("<span>"+cur_restaurant.rating+"</span>");
+				yelp_rating.append( rating_stars );
+				food_features_list.append(yelp_rating);
+		}
+
+		var address = cur_restaurant.location.display_address.join();
+		var food_location = $("<li>").addClass("list-group-item trail_descr").html(address);
+		food_features_list.append(food_location);
+
+		food_card.append(food_features_list);
+		$("#food-result").append(food_card);
+
+		get_rstrnt_review(cur_restaurant.id, i);
+
+	}
+}
+
+
+// === WEATHER ================== 
+function getWeather(city) {
+
+    console.log("~~ Weather new search!");
+	//get latitude & longitude
+	var geocoder = new google.maps.Geocoder();
+	geocoder.geocode({ 'address': city }, function (results, status) {
+		
+		console.log("geocoder: ", status, results);
+    	
+    	if (status == google.maps.GeocoderStatus.OK) {
+			var latitude = results[0].geometry.location.lat();
+			var longitude = results[0].geometry.location.lng();
+
+			var url_str = "https://api.openweathermap.org/data/2.5/forecast?lat=";
+			url_str += latitude+"&lon="+longitude+"&APPID="+weather_key;
+			$.ajax({url: url_str})
+			.done(function(weather) {
+				// console.log(weather);
+				renderWeather(weather.list);
+			});
+		}
+	});
 }
 
 function renderWeather(data){
@@ -326,8 +348,6 @@ function renderWeather(data){
 			var w_col = $('<td>');
 			if(parseInt(t1) === w_tm){
 				counter++;
-				// var time_p = $('<p>').addClass('time');
-				// time_p.html([time]);
 
 				var temp_p = $('<p>').addClass('temp');
 				temp_p.html(fTemp+"&deg;F");
@@ -339,7 +359,6 @@ function renderWeather(data){
 				var weatherType_p = $('<p>').addClass('weatherType');
 				weatherType_p.html(weatherType);
 
-				// w_col.append(time_p);
 				temp_p.append(icon_img);
 				w_col.append(temp_p);
 				w_col.append(weatherType_p);
@@ -369,19 +388,27 @@ var tabs_nav = $(".tabs-nav");
 
 tabs_nav.find('.tabs-anchor').on("click", function(event){
 
-	var city_data = $("#city-autocomplete").val();
+	var city_name = $("#city-autocomplete").val();
 
-	if(city_data != "" && this.id == "trails"){
-		getGoogleTrails();
+	if( city_name !== "" ){
 
-	} 
-	if(city_data != "" && this.id == "weather"){
-		getWeather();
+		if( city_name!== current_city.name){
+			reset_visited(city_name);
+		}
+		if( this.id === "trails" && current_city.trails === 0 ){
+			current_city.trails = 1;
+			getGoogleTrails(city_name);
+		} 
+		if( this.id === "weather" && current_city.weather === 0 ){
+			current_city.weather = 1;
+			getWeather(city_name);
+		}
+		if( this.id === "food" && current_city.food === 0 ){
+			current_city.food = 1;
+			getFood(city_name);
+		};
 	}
-	else if(city_data != "" && this.id == "food"){
-		getFood();
-	};
-
+	//switch tabs visibility
 	tabs_nav.find('.current').removeClass('current');
 	$(this).addClass('current');
 	var id = "#"+ this.id + "-result";
@@ -395,11 +422,23 @@ $("#city-search").on("click", function(event){
 	
 	$("header").find('.frontpage').addClass('top').removeClass('frontpage');
 	
-	var city_data = $("#city-autocomplete").val();
-	if(city_data != ""){
+	var city_name = $("#city-autocomplete").val();
+	if(city_name !== "" && city_name!== current_city.name){
+
+		reset_visited(city_name);
+
 		$(".tabs").show();
 		$(".current").click();
 	}
 });
 
+function set_visited(tab){
+	current_city[tab] = 1;
+}
 
+function reset_visited(city){
+	current_city.name = city;
+	current_city.trails = 0;
+	current_city.food = 0;
+	current_city.weather = 0;
+}
